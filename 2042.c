@@ -1,21 +1,14 @@
 #include <stdio.h>
 
-#define SIZE 100000
+#define SIZE 1000000
 
 int arr[SIZE];
-int rmq[SIZE*4];
+long long rmq[SIZE*4];
 
-int update(int index, int value, int node, int node_s, int node_e);
-int query(int node, int node_s, int node_e ,int start, int end);
-int init(int node, int start, int end);
+long long update(int index, int value, int node, int node_s, int node_e);
+long long query(int node, int node_s, int node_e ,int start, int end);
+long long init(int node, int start, int end);
 
-void printTree(int n)
-{
-	int i;
-	for(i=1; i<16; i++)
-		printf("%d ", rmq[i]);
-	printf("\n");
-}
 
 int main(void)
 {
@@ -35,28 +28,27 @@ int main(void)
 		if(a==1)
 			update(b-1,c,1,0,N-1);
 		else
-			printf("%d\n",query(1, 0, N-1, b-1, c-1));
+			printf("%lld\n",query(1, 0, N-1, b-1, c-1));
 	}
 	return 0;
 }
 
-int init(int node, int start, int end)
+long long init(int node, int start, int end)
 {
 	int a=0,b=0;
 	int mid;
-	printf("start=%d end=%d value=%d node=%d\n",start, end, arr[end],node);
 
 	if(start==end)
 	{
 		return rmq[node]=arr[start];
 	}
 	mid=(start+end)/2;
-	a=init(node*2, start, mid);
-	b=init(node*2+1, mid+1, end);
-	return rmq[node]=a+b;
+    init(node*2, start, mid);
+	init(node*2+1, mid+1, end);
+    return rmq[node]=rmq[node*2]+rmq[node*2+1];
 }
 
-int query(int node, int node_s, int node_e ,int start, int end)
+long long query(int node, int node_s, int node_e ,int start, int end)
 {
 	int mid;
 
@@ -70,7 +62,7 @@ int query(int node, int node_s, int node_e ,int start, int end)
 	return query(node*2, node_s, mid, start, end)+query(node*2+1, mid+1, node_e, start, end);
 }
 
-int update(int index, int value, int node, int node_s, int node_e)
+long long update(int index, int value, int node, int node_s, int node_e)
 {
 	int mid;
 
